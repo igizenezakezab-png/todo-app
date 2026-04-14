@@ -1,0 +1,41 @@
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: rgb(22, 68, 103);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  width: 320px;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+button {
+  width: 100%;
+  padding: 8px;
+  background: brown;
+  color: white;
+  border: none;
+  margin-top: 5px;
+}
+
+.item {
+  background: #f2f2f2;
+  padding: 8px;
+  margin-top: 8px;
+}
