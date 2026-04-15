@@ -7,54 +7,62 @@ const API_URL = "http://localhost:5000/todos";
 function App() {
   const [todos, setTodos] = useState([]);
 
-  const [Activity, setActivity] = useState("");
-  const [Date, setDate] = useState("");
-  const [Reminder, setReminder] = useState("");
+  const [activity, setActivity] = useState("");
+  const [date, setDate] = useState("");
+  const [reminder, setReminder] = useState("");
 
   const [editId, setEditId] = useState(null);
 
-  // GET
-  useEffect(() => {
-    getTodos();
-  }, []);
-
+  // GET TODOS
   const getTodos = async () => {
     const res = await axios.get(API_URL);
     setTodos(res.data);
   };
 
-  // EDIT
-  const editTodo = (item) => {
-    setActivity(item.Activity);
-    setDate(item.Date);
-    setReminder(item.Reminder);
-    setEditId(item.id);
-  };
+  useEffect(() => {
+    getTodos();
+  }, []);
 
-  // ADD + UPDATE
-  const addTodo = async () => {
-    if (!Activity || !Date || !Reminder) return;
+  // ADD or UPDATE
+  const handleSubmit = async () => {
+    if (!activity || !date || !reminder) return;
 
     if (editId) {
+      // UPDATE
       await axios.put(`${API_URL}/${editId}`, {
-        Activity,
-        Date,
-        Reminder,
+        activity,
+        date,
+        reminder,
       });
+
+      // refresh from backend
+      await getTodos();
+
       setEditId(null);
     } else {
+      // ADD
       await axios.post(API_URL, {
-        Activity,
-        Date,
-        Reminder,
+        activity,
+        date,
+        reminder,
       });
+
+      // refresh from backend
+      await getTodos();
     }
 
+    // clear inputs
     setActivity("");
     setDate("");
     setReminder("");
+  };
 
-    getTodos();
+  // EDIT
+  const editTodo = (item) => {
+    setActivity(item.activity);
+    setDate(item.date);
+    setReminder(item.reminder);
+    setEditId(item.id);
   };
 
   // DELETE
@@ -66,45 +74,43 @@ function App() {
   return (
     <div className="container">
       <div className="card">
-
         <h1>TODO APP</h1>
 
+        <label>Activity</label>
         <input
-          placeholder="Activity"
-          value={Activity}
+          placeholder="Enter activity"
+          value={activity}
           onChange={(e) => setActivity(e.target.value)}
         />
 
+        <label>Date</label>
         <input
-          placeholder="Date"
-          value={Date}
+          type="date"
+          value={date}
           onChange={(e) => setDate(e.target.value)}
         />
 
+        <label>Reminder</label>
         <input
-          placeholder="Reminder"
-          value={Reminder}
+          type="time"
+          value={reminder}
           onChange={(e) => setReminder(e.target.value)}
         />
 
-        <button onClick={addTodo}>
-          {editId ? "Update" : "Add"}
+        <button onClick={handleSubmit}>
+          {editId ? "Update Todo" : "Add Todo"}
         </button>
 
         {todos.map((item) => (
           <div key={item.id} className="item">
+            <p><strong>{item.activity}</strong></p>
+            <p>📅 {item.date}</p>
+            <p>⏰ {item.reminder}</p>
 
-            <p>{item.Activity}</p>
-            <p>{item.Date}</p>
-            <p>{item.Reminder}</p>
-
-            {/* ✅ IMPORTANT BUTTONS */}
             <button onClick={() => editTodo(item)}>Edit</button>
             <button onClick={() => deleteTodo(item.id)}>Delete</button>
-
           </div>
         ))}
-
       </div>
     </div>
   );
