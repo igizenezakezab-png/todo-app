@@ -83,7 +83,7 @@ function App() {
           onChange={(e) => setActivity(e.target.value)}
         />
 
-        <label>Date</label>
+        <label>date</label>
         <input
           type="date"
           value={date}
