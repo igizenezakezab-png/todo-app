@@ -6,17 +6,19 @@ const API_URL = "http://localhost:5000/todos";
 
 function App() {
   const [todos, setTodos] = useState([]);
-
   const [activity, setActivity] = useState("");
   const [date, setDate] = useState("");
   const [reminder, setReminder] = useState("");
-
   const [editId, setEditId] = useState(null);
 
   // GET TODOS
   const getTodos = async () => {
-    const res = await axios.get(API_URL);
-    setTodos(res.data);
+    try {
+      const res = await axios.get(API_URL);
+      setTodos(res.data);
+    } catch (error) {
+      console.log("GET ERROR:", error.message);
+    }
   };
 
   useEffect(() => {
@@ -27,34 +29,30 @@ function App() {
   const handleSubmit = async () => {
     if (!activity || !date || !reminder) return;
 
-    if (editId) {
-      // UPDATE
-      await axios.put(`${API_URL}/${editId}`, {
-        activity,
-        date,
-        reminder,
-      });
+    try {
+      if (editId) {
+        await axios.put(`${API_URL}/${editId}`, {
+          activity,
+          date,
+          reminder,
+        });
+        setEditId(null);
+      } else {
+        await axios.post(API_URL, {
+          activity,
+          date,
+          reminder,
+        });
+      }
 
-      // refresh from backend
-      await getTodos();
+      setActivity("");
+      setDate("");
+      setReminder("");
 
-      setEditId(null);
-    } else {
-      // ADD
-      await axios.post(API_URL, {
-        activity,
-        date,
-        reminder,
-      });
-
-      // refresh from backend
-      await getTodos();
+      getTodos();
+    } catch (error) {
+      console.log("POST ERROR:", error.message);
     }
-
-    // clear inputs
-    setActivity("");
-    setDate("");
-    setReminder("");
   };
 
   // EDIT
@@ -67,30 +65,34 @@ function App() {
 
   // DELETE
   const deleteTodo = async (id) => {
-    await axios.delete(`${API_URL}/${id}`);
-    getTodos();
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      getTodos();
+    } catch (error) {
+      console.log("DELETE ERROR:", error.message);
+    }
   };
 
   return (
     <div className="container">
       <div className="card">
         <h1>TODO APP</h1>
+        Activity:
 
-        <label>Activity</label>
         <input
-          placeholder="Enter activity"
+          placeholder="Activity"
           value={activity}
           onChange={(e) => setActivity(e.target.value)}
         />
+        Date:
 
-        <label>date</label>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
+        Reminder:
 
-        <label>Reminder</label>
         <input
           type="time"
           value={reminder}
@@ -103,9 +105,9 @@ function App() {
 
         {todos.map((item) => (
           <div key={item.id} className="item">
-            <p><strong>{item.activity}</strong></p>
-            <p>📅 {item.date}</p>
-            <p>⏰ {item.reminder}</p>
+            <p><b>{item.activity}</b></p>
+            <p>{item.date}</p>
+            <p>{item.reminder}</p>
 
             <button onClick={() => editTodo(item)}>Edit</button>
             <button onClick={() => deleteTodo(item.id)}>Delete</button>
