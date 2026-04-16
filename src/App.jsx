@@ -27,7 +27,10 @@ function App() {
 
   // ADD or UPDATE
   const handleSubmit = async () => {
-    if (!activity || !date || !reminder) return;
+    if (!activity || !date || !reminder) {
+      alert("Please fill all fields");
+      return;
+    }
 
     try {
       if (editId) {
@@ -52,6 +55,7 @@ function App() {
       getTodos();
     } catch (error) {
       console.log("POST ERROR:", error.message);
+      alert("Backend not connected. Check server.");
     }
   };
 
@@ -77,23 +81,20 @@ function App() {
     <div className="container">
       <div className="card">
         <h1>TODO APP</h1>
-        Activity:
 
-        <input
+        Activity:<input
           placeholder="Activity"
           value={activity}
           onChange={(e) => setActivity(e.target.value)}
         />
-        Date:
 
-        <input
+        Date:<input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
-        Reminder:
 
-        <input
+        Reminder:<input
           type="time"
           value={reminder}
           onChange={(e) => setReminder(e.target.value)}
