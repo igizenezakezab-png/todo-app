@@ -82,19 +82,19 @@ function App() {
       <div className="card">
         <h1>TODO APP</h1>
 
-        ACTIVITY:<input
+        Activity:<input
           placeholder="Activity"
           value={activity}
           onChange={(e) => setActivity(e.target.value)}
         />
 
-        DATE:<input
+        Date:<input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
 
-        REMINDER:<input
+        Reminder:<input
           type="time"
           value={reminder}
           onChange={(e) => setReminder(e.target.value)}
